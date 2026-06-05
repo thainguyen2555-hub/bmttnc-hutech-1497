@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DangNguyen_1497 | An toàn thông tin nâng cao - HUTECH</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { background: linear-gradient(145deg, #eef2f9 0%, #dfe6f0 100%); min-height: 100vh; padding: 2rem 1rem; }
+        .container { max-width: 800px; }
+        .card-header-custom { background: linear-gradient(135deg, #0b2b40, #1a4a5f); border-radius: 1.5rem 1.5rem 1rem 1rem; padding: 1.5rem; color: white; text-align: center; margin-bottom: 2rem; }
+        .logo-area img { height: 70px; background: white; border-radius: 12px; padding: 8px 20px; margin-bottom: 15px; }
+        .owner-badge { background: rgba(255,215,0,0.2); border-radius: 40px; padding: 0.3rem 1.2rem; display: inline-block; font-size: 0.9rem; margin-top: 10px; }
+        .menu-list { list-style: none; padding: 0; }
+        .menu-list li { margin-bottom: 15px; }
+        .menu-list a { display: flex; align-items: center; justify-content: space-between; background: white; padding: 1rem 1.5rem; border-radius: 1rem; color: #1a4a5f; text-decoration: none; font-weight: 600; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
+        .menu-list a:hover { background: #1e6f5c; color: white; transform: translateX(5px); }
+        .menu-list a i:first-child { font-size: 1.3rem; margin-right: 15px; }
+        .menu-list a span { display: flex; align-items: center; }
+        footer { text-align: center; margin-top: 2.5rem; color: #4a627a; font-size: 0.8rem; }
+        h4 { font-weight: 700; color: #1e3b4a; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card-header-custom">
+            <div class="logo-area">
+                <img src="https://file1.hutech.edu.vn/file/editor/homepage/stories/hinh34/logo%20CMYK-01.png" alt="HUTECH">
+            </div>
+            <h3><i class="fas fa-shield-alt me-2"></i>BẢO MẬT THÔNG TIN NÂNG CAO</h3>
+            <p class="mb-0 opacity-75">Công cụ mã hóa & giải mã các thuật toán cổ điển</p>
+            <div class="owner-badge"><i class="fas fa-user-astronaut"></i> DangNguyen_1497</div>
+        </div>
+        <h4 class="text-center mb-4"><i class="fas fa-code-branch"></i> Chọn thuật toán</h4>
+        <ul class="menu-list">
+            <li><a href="/caesar"><span><i class="fas fa-arrow-right-arrow-left"></i> Caesar Cipher</span><i class="fas fa-chevron-right"></i></a></li>
+            <li><a href="/playfair"><span><i class="fas fa-border-all"></i> Playfair Cipher</span><i class="fas fa-chevron-right"></i></a></li>
+            <li><a href="/railfence"><span><i class="fas fa-train"></i> Rail Fence Cipher</span><i class="fas fa-chevron-right"></i></a></li>
+            <li><a href="/vigenere"><span><i class="fas fa-font"></i> Vigenere Cipher</span><i class="fas fa-chevron-right"></i></a></li>
+        </ul>
+        <footer><hr><i class="fas fa-lock"></i> Mã hóa & Giải mã trực tiếp trên trình duyệt | HUTECH</footer>
+    </div>
+</body>
+</html>

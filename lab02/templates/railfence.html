@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rail Fence Cipher - DangNguyen_1497 | HUTECH</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { background: linear-gradient(145deg, #eef2f9 0%, #dfe6f0 100%); padding: 2rem 1rem; }
+        .container { max-width: 700px; margin: 0 auto; }
+        .header-card { background: linear-gradient(135deg, #0b2b40, #1a4a5f); border-radius: 1.5rem; padding: 1rem 1.5rem; color: white; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+        .logo-small img { height: 50px; background: white; border-radius: 10px; padding: 5px 12px; }
+        .owner-name { background: rgba(255,215,0,0.2); border-radius: 40px; padding: 0.3rem 1rem; font-size: 0.85rem; }
+        .form-card { background: white; border-radius: 1.5rem; padding: 1.8rem; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .btn-back { background: #6c757d; border: none; border-radius: 40px; padding: 0.4rem 1.2rem; margin-bottom: 1rem; color: white; display: inline-block; text-decoration: none; }
+        .btn-back:hover { background: #5a6268; color: white; text-decoration: none; }
+        .btn-encrypt { background: #1e6f5c; border: none; border-radius: 40px; padding: 0.5rem 1.8rem; color: white; cursor: pointer; }
+        .btn-decrypt { background: #2c6e9e; border: none; border-radius: 40px; padding: 0.5rem 1.8rem; color: white; cursor: pointer; }
+        .result-area { background: #f8fafd; border-radius: 1rem; padding: 1rem; margin-top: 1.5rem; border-left: 4px solid #1e6f5c; word-break: break-word; }
+        .error-message { color: #dc3545; font-size: 0.8rem; margin-top: 0.25rem; }
+        .required::after { content: " *"; color: #dc3545; }
+        .info-note { background: #e9ecef; border-radius: 0.8rem; padding: 0.8rem; margin-top: 1rem; font-size: 0.85rem; color: #495057; }
+        footer { text-align: center; margin-top: 1.5rem; color: #4a627a; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="/" class="btn-back"><i class="fas fa-arrow-left"></i> Quay lại</a>
+    <div class="header-card">
+        <div class="logo-small"><img src="https://file1.hutech.edu.vn/file/editor/homepage/stories/hinh34/logo%20CMYK-01.png" alt="HUTECH"></div>
+        <div class="text-center"><h4 class="mb-0"><i class="fas fa-train"></i> RAIL FENCE CIPHER</h4></div>
+        <div class="owner-name"><i class="fas fa-user-astronaut"></i> DangNguyen_1497</div>
+    </div>
+    <div class="form-card">
+        <div class="mb-3">
+            <label class="form-label font-weight-bold required">Văn bản (Plaintext / Ciphertext):</label>
+            <input type="text" class="form-control" id="railText" placeholder="Nhập văn bản... (hỗ trợ tiếng Việt)">
+            <div class="error-message" id="textError"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label font-weight-bold required">Số hàng (Rails):</label>
+            <input type="number" class="form-control" id="railKey" placeholder="Nhập số hàng, vd: 3">
+            <div class="error-message" id="keyError"></div>
+        </div>
+        <button type="button" id="encryptBtn" class="btn btn-encrypt"><i class="fas fa-lock"></i> Mã hóa</button>
+        <button type="button" id="decryptBtn" class="btn btn-decrypt ms-2"><i class="fas fa-unlock-alt"></i> Giải mã</button>
+        <div id="result" class="result-area"><i class="fas fa-info-circle"></i> Kết quả Rail Fence...</div>
+        <div class="info-note">
+            <i class="fas fa-lightbulb"></i> <strong>Ràng buộc:</strong><br>
+            • Văn bản: không được để trống<br>
+            • Số hàng (rails): không được để trống, phải là số nguyên, ≥ 2<br>
+            • <strong class="text-danger">ĐỘ DÀI: số hàng (rails) ≤ độ dài văn bản</strong><br>
+            • <i class="fas fa-info-circle"></i> Hỗ trợ tiếng Việt có dấu và Unicode. Giữ nguyên tất cả ký tự.
+        </div>
+    </div>
+    <footer><i class="fas fa-lock"></i> DangNguyen_1497 - Mã hóa & Giải mã Rail Fence</footer>
+</div>
+
+<script>
+    function clearErrors() {
+        document.getElementById('textError').innerHTML = '';
+        document.getElementById('keyError').innerHTML = '';
+    }
+    
+    function validateInputs() {
+        clearErrors();
+        let isValid = true;
+        let text = document.getElementById('railText').value;
+        let rails = document.getElementById('railKey').value;
+        let textLength = text ? text.length : 0;
+        
+        // Ràng buộc 1: Văn bản không được để trống
+        if (!text || text.trim() === '') {
+            document.getElementById('textError').innerHTML = '❌ Vui lòng nhập văn bản!';
+            isValid = false;
+        }
+        
+        // Ràng buộc 2: Số hàng không được để trống
+        if (rails === null || rails === '') {
+            document.getElementById('keyError').innerHTML = '❌ Vui lòng nhập số hàng (rails)!';
+            isValid = false;
+        } else {
+            let railsNum = Number(rails);
+            
+            // Ràng buộc 3: Số hàng phải là số nguyên
+            if (isNaN(railsNum)) {
+                document.getElementById('keyError').innerHTML = '❌ Số hàng phải là số nguyên!';
+                isValid = false;
+            } 
+            // Ràng buộc 4: Số hàng không được là số thập phân
+            else if (!Number.isInteger(railsNum)) {
+                document.getElementById('keyError').innerHTML = '❌ Số hàng phải là số nguyên (không được là số thập phân)!';
+                isValid = false;
+            } 
+            // Ràng buộc 5: Số hàng phải ≥ 2
+            else if (railsNum < 2) {
+                document.getElementById('keyError').innerHTML = '❌ Số hàng phải lớn hơn hoặc bằng 2!';
+                isValid = false;
+            } 
+            // Ràng buộc 6: Số hàng không được lớn hơn độ dài văn bản
+            else if (railsNum > textLength && textLength > 0) {
+                document.getElementById('keyError').innerHTML = `❌ Số hàng (${railsNum}) không được lớn hơn độ dài văn bản (${textLength} ký tự)!`;
+                isValid = false;
+            }
+        }
+        
+        return isValid;
+    }
+    
+    function railFenceEncrypt(text, rails) {
+        if(rails <= 1) return text;
+        let fence = Array(rails).fill().map(() => []);
+        let dirDown = false, row = 0;
+        let chars = [...text];
+        for(let ch of chars) {
+            fence[row].push(ch);
+            if(row === 0 || row === rails-1) dirDown = !dirDown;
+            row += dirDown ? 1 : -1;
+        }
+        return fence.flat().join('');
+    }
+    
+    function railFenceDecrypt(cipher, rails) {
+        if(rails <= 1) return cipher;
+        let chars = [...cipher];
+        let len = chars.length;
+        let fence = Array(rails).fill().map(() => Array(len).fill(null));
+        let dirDown = false, row = 0;
+        for(let i = 0; i < len; i++) {
+            fence[row][i] = '*';
+            if(row === 0 || row === rails-1) dirDown = !dirDown;
+            row += dirDown ? 1 : -1;
+        }
+        let idx = 0;
+        for(let r = 0; r < rails; r++) {
+            for(let c = 0; c < len; c++) {
+                if(fence[r][c] === '*' && idx < len) {
+                    fence[r][c] = chars[idx++];
+                }
+            }
+        }
+        let result = [];
+        row = 0; dirDown = false;
+        for(let i = 0; i < len; i++) {
+            result.push(fence[row][i]);
+            if(row === 0 || row === rails-1) dirDown = !dirDown;
+            row += dirDown ? 1 : -1;
+        }
+        return result.join('');
+    }
+    
+    document.getElementById('encryptBtn').onclick = () => {
+        if (!validateInputs()) return;
+        let text = document.getElementById('railText').value;
+        let rails = parseInt(document.getElementById('railKey').value);
+        let result = railFenceEncrypt(text, rails);
+        document.getElementById('result').innerHTML = `<i class="fas fa-lock"></i> <strong>Kết quả mã hóa:</strong><br>${result}`;
+    };
+    
+    document.getElementById('decryptBtn').onclick = () => {
+        if (!validateInputs()) return;
+        let text = document.getElementById('railText').value;
+        let rails = parseInt(document.getElementById('railKey').value);
+        let result = railFenceDecrypt(text, rails);
+        document.getElementById('result').innerHTML = `<i class="fas fa-unlock-alt"></i> <strong>Kết quả giải mã:</strong><br>${result}`;
+    };
+</script>
+</body>
+</html>

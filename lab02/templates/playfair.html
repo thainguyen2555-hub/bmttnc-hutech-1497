@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playfair Cipher - DangNguyen_1497 | HUTECH</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { background: linear-gradient(145deg, #eef2f9 0%, #dfe6f0 100%); padding: 2rem 1rem; }
+        .container { max-width: 700px; margin: 0 auto; }
+        .header-card { background: linear-gradient(135deg, #0b2b40, #1a4a5f); border-radius: 1.5rem; padding: 1rem 1.5rem; color: white; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+        .logo-small img { height: 50px; background: white; border-radius: 10px; padding: 5px 12px; }
+        .owner-name { background: rgba(255,215,0,0.2); border-radius: 40px; padding: 0.3rem 1rem; font-size: 0.85rem; }
+        .form-card { background: white; border-radius: 1.5rem; padding: 1.8rem; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .btn-back { background: #6c757d; border: none; border-radius: 40px; padding: 0.4rem 1.2rem; margin-bottom: 1rem; color: white; display: inline-block; text-decoration: none; }
+        .btn-back:hover { background: #5a6268; color: white; text-decoration: none; }
+        .btn-encrypt { background: #1e6f5c; border: none; border-radius: 40px; padding: 0.5rem 1.8rem; color: white; cursor: pointer; }
+        .btn-decrypt { background: #2c6e9e; border: none; border-radius: 40px; padding: 0.5rem 1.8rem; color: white; cursor: pointer; }
+        .result-area { background: #f8fafd; border-radius: 1rem; padding: 1rem; margin-top: 1.5rem; border-left: 4px solid #1e6f5c; word-break: break-word; max-height: 300px; overflow-y: auto; }
+        .error-message { color: #dc3545; font-size: 0.8rem; margin-top: 0.25rem; }
+        .required::after { content: " *"; color: #dc3545; }
+        .info-note { background: #e9ecef; border-radius: 0.8rem; padding: 0.8rem; margin-top: 1rem; font-size: 0.85rem; color: #495057; }
+        .matrix-preview { background: #f8f9fa; border-radius: 0.8rem; padding: 0.8rem; margin-top: 1rem; font-family: monospace; font-size: 0.9rem; border: 1px solid #dee2e6; display: none; }
+        .matrix-preview table { width: 100%; text-align: center; }
+        .matrix-preview td { padding: 5px; border: 1px solid #dee2e6; }
+        footer { text-align: center; margin-top: 1.5rem; color: #4a627a; font-size: 0.8rem; }
+        .btn-show-matrix { background: #6c757d; border: none; border-radius: 40px; padding: 0.2rem 1rem; font-size: 0.75rem; color: white; margin-left: 1rem; cursor: pointer; }
+        .btn-show-matrix:hover { background: #5a6268; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="/" class="btn-back"><i class="fas fa-arrow-left"></i> Quay lại</a>
+    <div class="header-card">
+        <div class="logo-small"><img src="https://file1.hutech.edu.vn/file/editor/homepage/stories/hinh34/logo%20CMYK-01.png" alt="HUTECH"></div>
+        <div class="text-center"><h4 class="mb-0"><i class="fas fa-border-all"></i> PLAYFAIR CIPHER</h4></div>
+        <div class="owner-name"><i class="fas fa-user-astronaut"></i> DangNguyen_1497</div>
+    </div>
+    <div class="form-card">
+        <div class="mb-3">
+            <label class="form-label font-weight-bold required">Văn bản (Plaintext / Ciphertext):</label>
+            <input type="text" class="form-control" id="playfairText" placeholder="Nhập văn bản...">
+            <div class="error-message" id="textError"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label font-weight-bold required">Khóa (Key):</label>
+            <input type="text" class="form-control" id="playfairKey" placeholder="Nhập khóa, vd: PLAYFAIR">
+            <div class="error-message" id="keyError"></div>
+            <button type="button" id="showMatrixBtn" class="btn-show-matrix"><i class="fas fa-table"></i> Xem ma trận</button>
+        </div>
+        <div id="matrixPreview" class="matrix-preview"></div>
+        <button type="button" id="encryptBtn" class="btn btn-encrypt"><i class="fas fa-lock"></i> Mã hóa</button>
+        <button type="button" id="decryptBtn" class="btn btn-decrypt ms-2"><i class="fas fa-unlock-alt"></i> Giải mã</button>
+        <div id="result" class="result-area"><i class="fas fa-info-circle"></i> Kết quả Playfair...</div>
+        <div class="info-note">
+            <i class="fas fa-lightbulb"></i> <strong>Ràng buộc:</strong><br>
+            • Văn bản: không được để trống<br>
+            • Khóa: không được để trống, chỉ được chứa chữ cái (A-Z, a-z)<br>
+            • <i class="fas fa-info-circle"></i> Tự động: J→I, thêm X khi cặp trùng/lẻ, loại bỏ số/ký tự đặc biệt. Kết quả chỉ gồm chữ IN HOA.
+        </div>
+    </div>
+    <footer><i class="fas fa-lock"></i> DangNguyen_1497 - Mã hóa & Giải mã Playfair</footer>
+</div>
+
+<script>
+    function clearErrors() {
+        document.getElementById('textError').innerHTML = '';
+        document.getElementById('keyError').innerHTML = '';
+    }
+    
+    function validateInputs() {
+        clearErrors();
+        let isValid = true;
+        let text = document.getElementById('playfairText').value;
+        let key = document.getElementById('playfairKey').value;
+        
+        // Ràng buộc 1: Văn bản không được để trống
+        if (!text || text.trim() === '') {
+            document.getElementById('textError').innerHTML = '❌ Vui lòng nhập văn bản!';
+            isValid = false;
+        }
+        
+        // Ràng buộc 2: Khóa không được để trống
+        if (!key || key.trim() === '') {
+            document.getElementById('keyError').innerHTML = '❌ Vui lòng nhập khóa!';
+            isValid = false;
+        } 
+        // Ràng buộc 3: Khóa chỉ được chứa chữ cái
+        else if (!/^[A-Za-z]+$/.test(key)) {
+            document.getElementById('keyError').innerHTML = '❌ Khóa chỉ được chứa chữ cái (A-Z hoặc a-z)!';
+            isValid = false;
+        }
+        
+        return isValid;
+    }
+    
+    // Tạo ma trận Playfair 5x5
+    function buildPlayfairMatrix(key) {
+        let matrix = [];
+        let used = new Set();
+        
+        // Xử lý khóa: chuyển hoa, J->I, loại bỏ ký tự không phải chữ
+        let keyStr = key.toUpperCase().replace(/J/g, 'I');
+        keyStr = keyStr.replace(/[^A-Z]/g, '');
+        
+        let alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
+        let fullKey = keyStr + alphabet;
+        
+        for(let i = 0; i < fullKey.length; i++) {
+            let ch = fullKey[i];
+            if(!used.has(ch) && alphabet.includes(ch)) {
+                used.add(ch);
+                matrix.push(ch);
+            }
+        }
+        
+        return matrix;
+    }
+    
+    // Hiển thị ma trận dạng bảng
+    function displayMatrix(matrix) {
+        if(!matrix || matrix.length !== 25) return;
+        let html = '<table class="table table-sm table-bordered text-center" style="width: auto; margin: 0 auto;">';
+        for(let i = 0; i < 5; i++) {
+            html += '<tr>';
+            for(let j = 0; j < 5; j++) {
+                html += `<td style="width: 45px; height: 45px; font-weight: bold; font-size: 1.1rem;">${matrix[i*5 + j]}</td>`;
+            }
+            html += '</tr>';
+        }
+        html += '</table>';
+        return html;
+    }
+    
+    // Chuẩn bị văn bản trước khi mã hóa
+    function prepareTextForEncrypt(text) {
+        // Chuyển hoa, J->I, loại bỏ ký tự không phải chữ
+        let processed = text.toUpperCase().replace(/J/g, 'I');
+        processed = processed.replace(/[^A-Z]/g, '');
+        
+        if(processed.length === 0) return "";
+        
+        // Xử lý cặp trùng và thêm X
+        let result = "";
+        for(let i = 0; i < processed.length; i++) {
+            result += processed[i];
+            if(i + 1 < processed.length && processed[i] === processed[i+1]) {
+                result += 'X';
+            }
+        }
+        
+        // Nếu độ dài lẻ, thêm X
+        if(result.length % 2 !== 0) {
+            result += 'X';
+        }
+        
+        return result;
+    }
+    
+    // Tìm vị trí trong ma trận
+    function findPosition(matrix, ch) {
+        let index = matrix.indexOf(ch);
+        if(index === -1) return null;
+        return { row: Math.floor(index / 5), col: index % 5 };
+    }
+    
+    // Mã hóa Playfair
+    function playfairEncrypt(plain, key) {
+        let matrix = buildPlayfairMatrix(key);
+        let prepared = prepareTextForEncrypt(plain);
+        
+        if(prepared === "") return "(Văn bản không có chữ cái nào để mã hóa)";
+        
+        let result = "";
+        
+        for(let i = 0; i < prepared.length; i += 2) {
+            let a = prepared[i];
+            let b = prepared[i+1];
+            
+            let posA = findPosition(matrix, a);
+            let posB = findPosition(matrix, b);
+            
+            if(!posA || !posB) {
+                result += a + b;
+                continue;
+            }
+            
+            // Cùng hàng
+            if(posA.row === posB.row) {
+                let newColA = (posA.col + 1) % 5;
+                let newColB = (posB.col + 1) % 5;
+                result += matrix[posA.row * 5 + newColA];
+                result += matrix[posB.row * 5 + newColB];
+            }
+            // Cùng cột
+            else if(posA.col === posB.col) {
+                let newRowA = (posA.row + 1) % 5;
+                let newRowB = (posB.row + 1) % 5;
+                result += matrix[newRowA * 5 + posA.col];
+                result += matrix[newRowB * 5 + posB.col];
+            }
+            // Hình chữ nhật
+            else {
+                result += matrix[posA.row * 5 + posB.col];
+                result += matrix[posB.row * 5 + posA.col];
+            }
+        }
+        
+        return result;
+    }
+    
+    // Chuẩn bị văn bản cho giải mã (chỉ lọc chữ)
+    function prepareTextForDecrypt(cipher) {
+        let processed = cipher.toUpperCase().replace(/J/g, 'I');
+        processed = processed.replace(/[^A-Z]/g, '');
+        return processed;
+    }
+    
+    // Giải mã Playfair
+    function playfairDecrypt(cipher, key) {
+        let matrix = buildPlayfairMatrix(key);
+        let prepared = prepareTextForDecrypt(cipher);
+        
+        if(prepared === "") return "(Ciphertext không có chữ cái nào)";
+        
+        if(prepared.length % 2 !== 0) {
+            return "Lỗi: Ciphertext có số ký tự lẻ! Vui lòng kiểm tra lại.";
+        }
+        
+        let result = "";
+        
+        for(let i = 0; i < prepared.length; i += 2) {
+            let a = prepared[i];
+            let b = prepared[i+1];
+            
+            let posA = findPosition(matrix, a);
+            let posB = findPosition(matrix, b);
+            
+            if(!posA || !posB) {
+                result += a + b;
+                continue;
+            }
+            
+            // Cùng hàng - lùi sang trái
+            if(posA.row === posB.row) {
+                let newColA = (posA.col - 1 + 5) % 5;
+                let newColB = (posB.col - 1 + 5) % 5;
+                result += matrix[posA.row * 5 + newColA];
+                result += matrix[posB.row * 5 + newColB];
+            }
+            // Cùng cột - lùi lên trên
+            else if(posA.col === posB.col) {
+                let newRowA = (posA.row - 1 + 5) % 5;
+                let newRowB = (posB.row - 1 + 5) % 5;
+                result += matrix[newRowA * 5 + posA.col];
+                result += matrix[newRowB * 5 + posB.col];
+            }
+            // Hình chữ nhật
+            else {
+                result += matrix[posA.row * 5 + posB.col];
+                result += matrix[posB.row * 5 + posA.col];
+            }
+        }
+        
+        // Loại bỏ X thừa ở cuối (chỉ xóa nếu X được thêm vào do padding)
+        // Nhưng cẩn thận: không xóa X ở giữa câu
+        if(result.endsWith('X')) {
+            // Kiểm tra xem X có phải do padding không (thường ở cuối)
+            let temp = result.slice(0, -1);
+            if(temp.length > 0 && temp[temp.length-1] !== 'X') {
+                result = temp;
+            }
+        }
+        
+        return result;
+    }
+    
+    // Xem ma trận
+    document.getElementById('showMatrixBtn').onclick = () => {
+        let key = document.getElementById('playfairKey').value;
+        if(!key || key.trim() === '') {
+            alert('Vui lòng nhập khóa trước khi xem ma trận!');
+            return;
+        }
+        if(!/^[A-Za-z]+$/.test(key)) {
+            alert('Khóa chỉ được chứa chữ cái (A-Z, a-z)!');
+            return;
+        }
+        
+        let matrix = buildPlayfairMatrix(key);
+        let preview = document.getElementById('matrixPreview');
+        preview.innerHTML = '<div class="text-center"><strong>Ma trận Playfair 5x5 (J=I)</strong><br>' + displayMatrix(matrix) + '</div>';
+        preview.style.display = 'block';
+    };
+    
+    document.getElementById('encryptBtn').onclick = () => {
+        if (!validateInputs()) return;
+        let text = document.getElementById('playfairText').value;
+        let key = document.getElementById('playfairKey').value;
+        let result = playfairEncrypt(text, key);
+        document.getElementById('result').innerHTML = `<i class="fas fa-lock"></i> <strong>Kết quả mã hóa:</strong><br>${result}`;
+    };
+    
+    document.getElementById('decryptBtn').onclick = () => {
+        if (!validateInputs()) return;
+        let text = document.getElementById('playfairText').value;
+        let key = document.getElementById('playfairKey').value;
+        let result = playfairDecrypt(text, key);
+        document.getElementById('result').innerHTML = `<i class="fas fa-unlock-alt"></i> <strong>Kết quả giải mã:</strong><br>${result}`;
+    };
+</script>
+</body>
+</html>
