@@ -11,16 +11,16 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Caesar Cipher</string>
+   <string>Playfair Cipher</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <!-- Tiêu đề Caesar cipher -->
+   <!-- Tiêu đề Playfair cipher -->
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>230</x>
       <y>10</y>
-      <width>180</width>
+      <width>240</width>
       <height>35</height>
      </rect>
     </property>
@@ -32,7 +32,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Caesar Cipher</string>
+     <string>Playfair Cipher</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -43,9 +43,9 @@
    <widget class="QLabel" name="label_name">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>230</x>
       <y>45</y>
-      <width>180</width>
+      <width>240</width>
       <height>25</height>
      </rect>
     </property>
@@ -66,7 +66,7 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>30</x>
       <y>90</y>
       <width>100</width>
       <height>25</height>
@@ -86,9 +86,9 @@
    <widget class="QPlainTextEdit" name="plainTextEdit">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>140</x>
       <y>90</y>
-      <width>480</width>
+      <width>500</width>
       <height>80</height>
      </rect>
     </property>
@@ -103,7 +103,7 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>30</x>
       <y>190</y>
       <width>100</width>
       <height>25</height>
@@ -123,9 +123,9 @@
    <widget class="QPlainTextEdit" name="plainTextEdit_2">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>140</x>
       <y>190</y>
-      <width>480</width>
+      <width>500</width>
       <height>40</height>
      </rect>
     </property>
@@ -140,7 +140,7 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>30</x>
       <y>250</y>
       <width>100</width>
       <height>25</height>
@@ -160,9 +160,9 @@
    <widget class="QPlainTextEdit" name="plainTextEdit_3">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>140</x>
       <y>250</y>
-      <width>480</width>
+      <width>500</width>
       <height>80</height>
      </rect>
     </property>
